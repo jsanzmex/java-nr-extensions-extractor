@@ -1,3 +1,5 @@
+package com.sopristec.extractor;
+
 public class JarClassListener extends Java8ParserBaseListener {
     @Override
     public void enterClassBodyDeclaration(Java8Parser.ClassBodyDeclarationContext ctx) {

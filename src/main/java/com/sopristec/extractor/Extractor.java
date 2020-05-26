@@ -1,3 +1,5 @@
+package com.sopristec.extractor;
+
 public class Extractor {
 
     private static final String INPUT_OPTION = "input";
@@ -15,6 +17,7 @@ public class Extractor {
         if(!input.isValid()){
             return;
         }
+
         // Step 2. Extract methods, default is "public only"
         final String defaultPublicMethodsOnly = "+";
         final StringBuilder extensionsBodyBuilder = new StringBuilder();
@@ -23,6 +26,7 @@ public class Extractor {
                 extensionsBodyBuilder,
                 input.inputPath);
         methods.execute();
+
         // Step 3. Fetch output filename and use to create output XML file, default is *.jar file name
         OutputCommand output = new OutputCommand(
                 System.getProperty(OUTPUT_OPTION, composeDefaultOutputFilename(input.getCommandOptions())),

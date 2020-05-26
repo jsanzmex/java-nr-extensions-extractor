@@ -61,7 +61,11 @@ To generate Parser/Lexer/Listener Java classes from grammar files, do the follow
 - As the initial baeldung guide <https://www.baeldung.com/java-antlr> explains, ANTLR4 plugin looks up for grammar files at *src/main/antlr4*. Copy the grammar files there.
 - Then execute `mvn antlr4:antlr4`. It will save the generated files to *src/target/TODO: complete here*
 
-### Adding build-helper-maven-plugin to Maven POM file
+#### There is one Gotcha
+If you want to have your Java classes under a package structure, e.g. 'org.example.myclass', your grammar files must be under the same folder structure your Java classes package.
+Otherwise, your classes won't have access to ANTLR4 generated files.
+
+### Give your Maven project access to ANTL4 compiled classes with build-helper-maven-plugin
 In order to add generated sources to the sources pathes of a project the add-sources goal from the manve helper plugin can be used.
 When the sources are generated they are immediately picked up by eclipse and compilation errors are avoided.
 

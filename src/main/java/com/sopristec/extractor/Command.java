@@ -1,3 +1,5 @@
+package com.sopristec.extractor;
+
 //  Inspired by:
 //  https://bugfactory.io/blog/organizing-java-command-line-utilities-with-the-command-pattern/
 

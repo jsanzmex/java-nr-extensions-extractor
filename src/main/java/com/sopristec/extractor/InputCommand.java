@@ -1,3 +1,5 @@
+package com.sopristec.extractor;
+
 import java.io.File;
 
 public class InputCommand extends Command  {
