@@ -315,11 +315,11 @@ classBody
 	:	'{' classBodyDeclaration* '}'
 	;
 
+/* MODIFIED BY JULIO SANCHEZ: ALL REFERENCES TO CONSTRUCTOR ARE NOT NEEDED */
 classBodyDeclaration
 	:	classMemberDeclaration
 	|	instanceInitializer
 	|	staticInitializer
-	|	constructorDeclaration
 	;
 
 classMemberDeclaration
@@ -508,34 +508,8 @@ staticInitializer
 	:	'static' block
 	;
 
-constructorDeclaration
-	:	constructorModifier* constructorDeclarator throws_? constructorBody
-	;
-
-constructorModifier
-	:	annotation
-	|	'public'
-	|	'protected'
-	|	'private'
-	;
-
-constructorDeclarator
-	:	typeParameters? simpleTypeName '(' formalParameterList? ')'
-	;
-
 simpleTypeName
 	:	Identifier
-	;
-
-constructorBody
-	:	'{' explicitConstructorInvocation? blockStatements? '}'
-	;
-
-explicitConstructorInvocation
-	:	typeArguments? 'this' '(' argumentList? ')' ';'
-	|	typeArguments? 'super' '(' argumentList? ')' ';'
-	|	expressionName '.' typeArguments? 'super' '(' argumentList? ')' ';'
-	|	primary '.' typeArguments? 'super' '(' argumentList? ')' ';'
 	;
 
 enumDeclaration

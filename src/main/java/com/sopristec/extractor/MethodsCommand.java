@@ -80,11 +80,11 @@ public class MethodsCommand extends Command {
 
         ParseTree tree = parser.classDeclaration();
         // Print LISP-style tree
-        // System.out.println(tree.toStringTree(parser));
+        System.out.println(tree.toStringTree(parser));
 
         // Walk tree and listen for records
         ParseTreeWalker walker = new ParseTreeWalker();
-        JarClassListener listener = new JarClassListener();
+        JarClassListener listener = new JarClassListener(parser);
         walker.walk(listener, tree);
     }
 
@@ -141,11 +141,23 @@ public class MethodsCommand extends Command {
     //region Test Methods
     private String fetchTestText()
     {
-        return "public class MethodsCommand extends Command {\n" +
+        /*return "public class MethodsCommand extends Command {\n" +
+                "  public java.lang.StringBuilder extensionsBody;\n" +
+                "  public MethodsCommand(String, StringBuilder);\n" +
+                "  public boolean isValid(String, StringBuilder);\n" +
+                "  public void execute(String, StringBuilder);\n" +
+                "}\n";+*/
+        /*return "public class MethodsCommand extends Command {\n" +
                 "  public java.lang.StringBuilder extensionsBody;\n" +
                 "  public MethodsCommand(java.lang.String, java.lang.StringBuilder);\n" +
-                "  public boolean isValid();\n" +
-                "  public void execute();\n" +
+                "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
+                "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
+                "}\n";*/
+        // The strategy to avoid invalid names: REPLACE BY VALID KNOWN STRINGS, e.g. __DOT__
+        return "public class com.sopristec.newrelic.InputCommand extends com.sopristec.newrelic.Command {\n" +
+                "  public com.sopristec.newrelic.InputCommand(java.lang.String);\n" +
+                "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
+                "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
                 "}";
     }
     //endregion
