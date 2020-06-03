@@ -2,9 +2,14 @@ package com.sopristec.extractor;
 
 import java.io.File;
 
+/**
+ * Processes the command line "input" argument: "-Dinput"
+ * Possible values: Path to a valid JAR file, e.g. "MyLibrary.jar"
+ * Compulsory argument, there is no optional value.
+ */
 public class InputCommand extends Command  {
 
-    public String inputPath = null;
+    private String inputPath = null;
 
     public InputCommand(String options){
         super(options);
@@ -32,8 +37,9 @@ public class InputCommand extends Command  {
     }
 
     @Override
-    public void execute() {
-        //
+    public void setup(ExtractorConfig config) {
+        config.inputPath = inputPath;
+        config.inputFilename = getCommandOptions();
     }
 
     private boolean inputFileExists(String inputFilename){

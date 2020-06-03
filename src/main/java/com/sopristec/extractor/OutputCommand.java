@@ -1,32 +1,35 @@
 package com.sopristec.extractor;
 
-import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * Processes the command line "output" argument: "-Doutput"
+ * Possible values: Path to a valid extensions output file, e.g. "MyExtensions.xml"
+ * Default value: "<INPUT_JAR_FILE_NAME>.xml"
+ */
 public class OutputCommand extends Command {
 
-    private String extensionsBody;
+    static final String XML_EXTENSION = ".xml";
+    private String filename;
 
-    public OutputCommand(String options, String extensionsBody){
+    public OutputCommand(String options){
         super(options);
-        this.extensionsBody = extensionsBody;
+        filename = getCommandOptions();
+        if(!filename.contains(XML_EXTENSION)){
+            filename = filename + XML_EXTENSION;
+        }
     }
 
     @Override
     public boolean isValid() {
-        return true;
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_.@()-]+\\.xml$");
+        Matcher matcher = pattern.matcher(filename);
+        return matcher.matches();
     }
 
     @Override
-    public void execute() {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(getCommandOptions()), "utf-8"))) {
-            writer.write(extensionsBody);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setup(ExtractorConfig config) {
+        config.outputFilename = filename;
     }
 }

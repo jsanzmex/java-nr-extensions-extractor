@@ -58,8 +58,18 @@ Here you can find Java8 grammar files for Parser and Lexer. You will need them f
 <https://github.com/antlr/grammars-v4/tree/master/java/java8>
 
 To generate Parser/Lexer/Listener Java classes from grammar files, do the following:
-- As the initial baeldung guide <https://www.baeldung.com/java-antlr> explains, ANTLR4 plugin looks up for grammar files at *src/main/antlr4*. Copy the grammar files there.
-- Then execute `mvn antlr4:antlr4`. It will save the generated files to *src/target/TODO: complete here*
+- As the initial baeldung guide <https://www.baeldung.com/java-antlr> explains, ANTLR4 plugin looks up for grammar files at *src/main/antlr4*.
+  Copy the grammar files there, but make sure to use the same package structure of your solution.
+  If your Main package is "com.example.app", then your grammar files should be copied to folder
+  path: *src/main/antlr4/com.example/app*. The tree should look like this:
+src/main/antlr4
+└── com
+    └── sopristec
+        └── extractor
+            ├── Java8Lexer.g4
+            └── Java8Parser.g4
+
+- Then execute `mvn antlr4:antlr4`. It will save the generated files to *src/<PACKAGE_PATH>/*
 
 #### There is one Gotcha
 If you want to have your Java classes under a package structure, e.g. 'org.example.myclass', your grammar files must be under the same folder structure your Java classes package.
@@ -78,4 +88,10 @@ This is a very nice guide explaining all the pros & cons of differente packaging
 The strategy used by this project is *maven-assembly-plugin* because it lets you include other JAR dependencies into a single JAR file.
 Official documentation here:
 <https://maven.apache.org/plugins/maven-assembly-plugin/usage.html>
+
+## ANTLR4 Tree walking
+Here other ways to walk a tree, without an explicit Listening class:
+<https://stackoverflow.com/questions/23305232/using-antlr-to-get-identifiers-and-function-names>
+<https://stackoverflow.com/questions/15050137/once-grammar-is-complete-whats-the-best-way-to-walk-an-antlr-v4-tree>
+<https://stackoverflow.com/questions/42882152/accessing-nested-parse-trees-java-antlr>
 

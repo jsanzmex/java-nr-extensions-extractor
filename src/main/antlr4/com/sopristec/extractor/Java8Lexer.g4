@@ -1124,3 +1124,8 @@ COMMENT
 LINE_COMMENT
     :   '//' ~[\r\n]* -> skip
     ;
+
+// ADDED BY JULIO SANCHEZ: Skips expressions created by 'javap' while decompiling a class: 'Compiled from "SomeFile.java"'
+COMPILED_FROM
+    : 'Compiled from' .*? [\n]+ -> skip
+    ;

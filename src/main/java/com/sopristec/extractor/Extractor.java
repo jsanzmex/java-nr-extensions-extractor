@@ -1,54 +1,176 @@
 package com.sopristec.extractor;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
 public class Extractor {
 
-    private static final String INPUT_OPTION = "input";
-    private static final String METHODS_OPTION = "methods";
-    private static final String OUTPUT_OPTION = "output";
+    //region Input Mocks
+    final static String[] inputMocks = new String[]{
+            "public class MethodsCommand extends Command {\n" +
+                    "  public StringBuilder extensionsBody;\n" +
+                    "  public MethodsCommand(String, StringBuilder);\n" +
+                    "  public boolean isValid(String, StringBuilder);\n" +
+                    "  public void execute(String, StringBuilder);\n" +
+                    "}\n",
+            "public class MethodsCommand extends Command {\n" +
+                    "  public java.lang.StringBuilder extensionsBody;\n" +
+                    "  public MethodsCommand(String, StringBuilder);\n" +
+                    "  public boolean isValid(String, StringBuilder);\n" +
+                    "  public void execute(String, StringBuilder);\n" +
+                    "}\n",
+            "public class MethodsCommand extends Command {\n" +
+                    "  public java.lang.StringBuilder extensionsBody;\n" +
+                    "  public MethodsCommand(java.lang.String, java.lang.StringBuilder);\n" +
+                    "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
+                    "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
+                    "}\n",
+            "public class com.sopristec.newrelic.InputCommand extends com.sopristec.newrelic.Command {\n" +
+                    "  public com.sopristec.newrelic.InputCommand(java.lang.String);\n" +
+                    "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
+                    "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
+                    "}"
+    };
+    //endregion
 
-    private static long startTime;
+    private static final String DOT = "DOTOD";
 
-    public static void main(String[] args) {
+    private final String inputFilename;
+    private final ExtensionsXmlEncoder encoder;
 
-        recordStartTime();
+    public Extractor(String inputFilename, ExtensionsXmlEncoder encoder) {
+        this.inputFilename = inputFilename;
+        this.encoder = encoder;
+    }
 
-        // Step 1. Fetch and validate input JAR path
-        InputCommand input = new InputCommand(System.getProperty(INPUT_OPTION, ""));
-        if(!input.isValid()){
-            return;
+    private Integer lineCount = 0;
+
+    public void execute(){
+
+        // Extract Classes & Methods from Raw Command Line utils.
+        List<String> classNames = getRawClassNames();
+        Predicate<String> isNotClass = this::indexOfClassGTOne;
+        removeNonClasses(classNames, isNotClass);
+        List<String> formattedClassNames = new ArrayList<String>();
+        classNames.forEach(s -> {
+            formattedClassNames.add(formatClassName(s));
+            //System.out.println("cn: "+formatClassName(s));
+        });
+        List<String> methodNames = getRawMethodNames(
+                formattedClassNames);
+        methodNames.forEach(s -> {
+            System.out.println(String.format("mn %d: ", ++lineCount) + s);
+        });
+
+        // ANTLR4 Extraction
+        // Load input string into ANT Input Stream
+        String input = String.join(
+                String.format("%n"),
+                methodNames);
+        // TODO: Eliminate this test
+        input = inputMocks[3];
+
+        InputStream stream =
+                new ByteArrayInputStream(unsetDots(input)
+                        .getBytes(StandardCharsets.UTF_8));
+
+        // create a lexer that feeds off of input CharStream
+        Java8Lexer lexer = null;
+        try {
+            lexer = new Java8Lexer(
+                    CharStreams.fromStream(
+                            stream,
+                            StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        // Step 2. Extract methods, default is "public only"
-        final String defaultPublicMethodsOnly = "+";
-        final StringBuilder extensionsBodyBuilder = new StringBuilder();
-        MethodsCommand methods = new MethodsCommand(
-                System.getProperty(METHODS_OPTION, defaultPublicMethodsOnly),
-                extensionsBodyBuilder,
-                input.inputPath);
-        methods.execute();
+        // create a buffer of tokens pulled from the lexer
+        if (lexer == null) throw new AssertionError();
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-        // Step 3. Fetch output filename and use to create output XML file, default is *.jar file name
-        OutputCommand output = new OutputCommand(
-                System.getProperty(OUTPUT_OPTION, composeDefaultOutputFilename(input.getCommandOptions())),
-                extensionsBodyBuilder.toString());
-        output.execute();
+        // create a parser that feeds off the tokens buffer
+        Java8Parser parser = new Java8Parser(tokens);
 
-        logDuration();
+        ParseTree tree = parser.classDeclaration();
+        // Print LISP-style tree
+        System.out.println(tree.toStringTree(parser));
+
+        // Walk tree and listen for records
+        ParseTreeWalker walker = new ParseTreeWalker();
+        JarClassListener listener = new JarClassListener(encoder);
+        walker.walk(listener, tree);
     }
 
-    private static String composeDefaultOutputFilename(String inputFilename){
-        String[] temp = inputFilename.split("\\.");
-        return temp[temp.length-2] + ".xml";
+    private String formatClassName(String input){
+        return input
+                .replaceAll(".class","")
+                .replaceAll("/",".");
     }
 
-    //region Record duration
-    private static void recordStartTime(){
-        startTime = System.nanoTime();
+    private boolean indexOfClassGTOne(String s){
+        return !s.contains(".class");
     }
 
-    private static void logDuration(){
-        System.out.println("Methods extraction and parsing took " +
-                (System.nanoTime() - startTime)/1000000 + " milliseconds.");
+    private <T> void removeNonClasses(List<T> l, Predicate<T> p)
+    {
+        l.removeIf(p);
     }
-    //endregion
+
+    private List<String> getRawClassNames(){
+        try {
+            return RuntimeTask.executeCommand(
+                    new String[] {"jar", "tf", inputFilename});
+        } catch (IOException e) {
+            System.out.println("An error ocurred while trying to extract CLASS NAMES!");
+            e.printStackTrace();
+        }
+        return new ArrayList<String>();
+    }
+
+    private List<String> getRawMethodNames(List<String> classNames){
+        if(classNames.size() == 0){
+            System.out.println("There are no classes to extract methods to!");
+            return new ArrayList<String>();
+        }
+        List<String> initialCommands = Arrays.asList(
+                "javap", "-classpath", inputFilename);
+        List<String> commands = new ArrayList<>(
+                initialCommands.size() + classNames.size());
+        commands.addAll(initialCommands);
+        commands.addAll(classNames);
+        try {
+            return RuntimeTask.executeCommand(commands.toArray(new String[0]));
+        } catch (IOException e) {
+            System.out.println("An error occurred while trying to extract METHOD NAMES!");
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    private String unsetDots(String input){
+        // DOTS (.) are not considered in the ANTLR4 Java's grammar.
+        // But since "javap" returns fully qualified class names,
+        // we need a way to deal with those long "dotted" class names.
+        // The easies solution is to replace all DOT occurrences by a
+        // replacement, rather than updating the grammar:
+        return input.replaceAll("\\.",DOT);
+    }
+
+    private String resetDots(String input){
+        // The opposite operation as above's method:
+        return input.replaceAll(DOT,"\\.");
+    }
+
 }

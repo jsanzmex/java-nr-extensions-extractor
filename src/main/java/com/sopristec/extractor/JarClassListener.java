@@ -1,11 +1,14 @@
 package com.sopristec.extractor;
 
+/**
+ * The ANTLR4 listener class.
+ */
 public class JarClassListener extends Java8ParserBaseListener {
 
-    private Java8Parser parser;
+    private ExtensionsXmlEncoder encoder;
 
-    public JarClassListener(Java8Parser parser){
-        this.parser = parser;
+    public JarClassListener(ExtensionsXmlEncoder encoder){
+        this.encoder = encoder;
     }
 
     @Override
@@ -65,7 +68,10 @@ public class JarClassListener extends Java8ParserBaseListener {
     @Override
     public void enterClassMemberDeclaration(Java8Parser.ClassMemberDeclarationContext ctx) {
         super.enterClassMemberDeclaration(ctx);
-        if(ctx.getText().isEmpty() || isNotMethod(ctx.getText())){
+        if(     ctx.getText().isEmpty() ||
+                ctx.getText() == "\\r" ||
+                ctx.getText() == "\\n" ||
+                isNotMethod(ctx.getText())){
             return;
         }
         System.out.println("enterClassMemberDeclaration: " + ctx.getText());
@@ -73,8 +79,8 @@ public class JarClassListener extends Java8ParserBaseListener {
 
     // Another way to say it is class member
     private boolean isNotMethod(String input){
-        boolean hasAccessModifier = input.toLowerCase().indexOf("public") >= 0 || input.toLowerCase().indexOf("private") >= 0;
-        boolean hasSemicolon = input.indexOf(";") >= 0;
+        boolean hasAccessModifier = input.toLowerCase().contains("public") || input.toLowerCase().contains("private");
+        boolean hasSemicolon = input.contains(";");
         return hasAccessModifier && hasSemicolon;
     }
 }
