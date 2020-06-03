@@ -12,21 +12,9 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     @Override
-    public void enterClassType(Java8Parser.ClassTypeContext ctx) {
-        super.enterClassType(ctx);
-        System.out.println("enterClassType: " + ctx.getText());
-    }
-
-    @Override
-    public void enterMethodDeclaration(Java8Parser.MethodDeclarationContext ctx) {
-        super.enterMethodDeclaration(ctx);
-        System.out.println("enterMethodDeclaration: " + ctx.getText());
-    }
-
-    @Override
-    public void exitMethodDeclaration(Java8Parser.MethodDeclarationContext ctx) {
-        super.exitMethodDeclaration(ctx);
-        System.out.println("exitMethodDeclaration: " + ctx.getText());
+    public void enterNormalClassDeclaration(Java8Parser.NormalClassDeclarationContext ctx) {
+        super.enterNormalClassDeclaration(ctx);
+        System.out.println("enterNormalClassDeclaration.Identifier: " + ctx.Identifier().toString());
     }
 
     @Override
@@ -42,12 +30,6 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     @Override
-    public void enterMethodHeader(Java8Parser.MethodHeaderContext ctx) {
-        super.enterMethodHeader(ctx);
-        System.out.println("enterMethodHeader: " + ctx.getText());
-    }
-
-    @Override
     public void enterMethodDeclarator(Java8Parser.MethodDeclaratorContext ctx) {
         super.enterMethodDeclarator(ctx);
         System.out.println("enterMethodDeclarator: " + ctx.getText());
@@ -60,9 +42,9 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     @Override
-    public void exitFormalParameterList(Java8Parser.FormalParameterListContext ctx) {
-        System.out.println("exitFormalParameterList: " + ctx.getText());
-        super.exitFormalParameterList(ctx);
+    public void enterClassBodyDeclaration(Java8Parser.ClassBodyDeclarationContext ctx) {
+        System.out.println("enterClassBodyDeclaration: " + ctx.getText());
+        super.enterClassBodyDeclaration(ctx);
     }
 
     @Override
@@ -71,6 +53,7 @@ public class JarClassListener extends Java8ParserBaseListener {
         if(     ctx.getText().isEmpty() ||
                 ctx.getText() == "\\r" ||
                 ctx.getText() == "\\n" ||
+                ctx.getText() == "\\;" ||
                 isNotMethod(ctx.getText())){
             return;
         }
