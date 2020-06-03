@@ -37,7 +37,7 @@ public class MethodsCommand extends Command {
     @Override
     public boolean isValid() {
         if (!shouldExtractPrivate && !shouldExtractPublic){
-            System.out.println("Methods argument is invalid. Default behaviour is to extract PUBLIC methods.");
+            System.out.println("\"-Dmethods\" argument is invalid. Will extract PUBLIC methods.");
             shouldExtractPublic = true;
         }
         return true;

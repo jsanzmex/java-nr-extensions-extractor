@@ -70,7 +70,8 @@ public class Extractor {
         List<String> methodNames = getRawMethodNames(
                 formattedClassNames);
         methodNames.forEach(s -> {
-            System.out.println(String.format("mn %d: ", ++lineCount) + s);
+            //System.out.println(String.format("mn %d: ", ++lineCount) + s);
+            System.out.println(s);
         });
 
         // ANTLR4 Extraction

@@ -49,7 +49,8 @@
                  This allows us to execute our packaged application with:
                  java -cp target/my-application-1.0-jar-with-dependencies.jar com.example.Main
                -->
-            <plugin>
+            <!-- PREFERED TO USE INTELLIJ's PROJECT STRUCTURE: https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637-->
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.3.0</version>
@@ -59,15 +60,15 @@
                     </descriptorRefs>
                 </configuration>
                 <executions>
-                    <execution>
-                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
-                        <phase>package</phase> <!-- bind to the packaging phase -->
-                        <goals>
+                    <execution>-->
+                        <!--<id>make-assembly</id>--> <!-- this is used for inheritance merges -->
+                        <!--<phase>package</phase>--> <!-- bind to the packaging phase -->
+                        <!--<goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <!--Add ANTLR4 generated sources to the sources path-->
             <plugin>
