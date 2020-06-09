@@ -75,8 +75,15 @@ src/main/antlr4
 If you want to have your Java classes under a package structure, e.g. 'org.example.myclass', your grammar files must be under the same folder structure your Java classes package.
 Otherwise, your classes won't have access to ANTLR4 generated files.
 
+#### ANTLR4 Tree walking
+Here other ways to walk a tree, without an explicit Listening class:
+<https://stackoverflow.com/questions/23305232/using-antlr-to-get-identifiers-and-function-names>
+<https://stackoverflow.com/questions/15050137/once-grammar-is-complete-whats-the-best-way-to-walk-an-antlr-v4-tree>
+<https://stackoverflow.com/questions/42882152/accessing-nested-parse-trees-java-antlr>
+
+
 ### Give your Maven project access to ANTL4 compiled classes with build-helper-maven-plugin
-In order to add generated sources to the sources pathes of a project the add-sources goal from the manve helper plugin can be used.
+In order to add generated sources to the sources pathes of a project the add-sources goal from the maven helper plugin can be used.
 When the sources are generated they are immediately picked up by eclipse and compilation errors are avoided.
 
 Reference: <http://www.jeeatwork.com/?p=166>
@@ -85,13 +92,10 @@ Reference: <http://www.jeeatwork.com/?p=166>
 This is a very nice guide explaining all the pros & cons of differente packaging strategies:
 <https://www.baeldung.com/executable-jar-with-maven>
 
-The strategy used by this project is *maven-assembly-plugin* because it lets you include other JAR dependencies into a single JAR file.
+This project uses IntelliJ's Artifact creation strategy, which is explained here:
+<https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637>
+
+Originally this project used *maven-assembly-plugin* because it lets you include other JAR dependencies into a single JAR file.
 Official documentation here:
 <https://maven.apache.org/plugins/maven-assembly-plugin/usage.html>
-
-## ANTLR4 Tree walking
-Here other ways to walk a tree, without an explicit Listening class:
-<https://stackoverflow.com/questions/23305232/using-antlr-to-get-identifiers-and-function-names>
-<https://stackoverflow.com/questions/15050137/once-grammar-is-complete-whats-the-best-way-to-walk-an-antlr-v4-tree>
-<https://stackoverflow.com/questions/42882152/accessing-nested-parse-trees-java-antlr>
 

@@ -508,8 +508,18 @@ staticInitializer
 	:	'static' block
 	;
 
+/** MODIFIED BY JULIO
+ *  original 'constructorDeclaration' looks for 'constructorBody', but in our case
+ *  constructor and methods are more like signature declarations. Hence, we replaced
+ *  it by ';'*
+ *
+ *   constructorDeclaration
+ *  	:	constructorModifier* constructorDeclarator throws_? constructorBody
+ *	    ;
+ */
+
 constructorDeclaration
-	:	constructorModifier* constructorDeclarator throws_? constructorBody
+	:	constructorModifier* constructorDeclarator throws_? ';'*
 	;
 
 constructorModifier
@@ -528,11 +538,8 @@ simpleTypeName
 	;
 
 constructorBody
-    :
-    ;
-/*	:	'{' explicitConstructorInvocation? blockStatements? '}'
- *	;
-*/
+	:	'{' explicitConstructorInvocation? blockStatements? '}'
+	;
 
 explicitConstructorInvocation
 	:	typeArguments? 'this' '(' argumentList? ')' ';'

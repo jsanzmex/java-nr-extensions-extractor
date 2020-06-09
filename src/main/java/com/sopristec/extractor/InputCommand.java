@@ -15,22 +15,22 @@ public class InputCommand extends Command  {
         super(options);
 
         inputPath = System.getProperty("user.dir") + '/' + getCommandOptions();
-        System.out.println("Input path: " + inputPath);
+        SopristecLogManager.logger.debug("Input path: " + inputPath);
     }
 
     @Override
     public boolean isValid() {
         if(getCommandOptions().isEmpty()) {
-            System.out.println("No input JAR filename was specified!");
+            SopristecLogManager.logger.debug("No input JAR filename was specified!");
             return false;
         }
 
         if(!inputFileExists(inputPath)){
-            System.out.println("Input file \"" + inputPath + "\" not found!");
+            SopristecLogManager.logger.debug("Input file \"" + inputPath + "\" not found!");
             return false;
         }
         if(!inputFileIsJar(getCommandOptions())){
-            System.out.println("Input file \"" + getCommandOptions() + "\" is not a valid Java Archive!");
+            SopristecLogManager.logger.debug("Input file \"" + getCommandOptions() + "\" is not a valid Java Archive!");
             return false;
         }
         return true;

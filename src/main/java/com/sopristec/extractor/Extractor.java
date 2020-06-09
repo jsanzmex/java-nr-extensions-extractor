@@ -37,7 +37,7 @@ public class Extractor {
                     "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
                     "}\n",
             "public class com.sopristec.newrelic.InputCommand extends com.sopristec.newrelic.Command {\n" +
-                    "  public com.sopristec.newrelic.InputCommand(java.lang.String);\n" +
+                    "  public com.sopristec.newrelic.InputCommand(java.lang.StringAtConstructor);\n" +
                     "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
                     "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
                     "}"
@@ -65,13 +65,13 @@ public class Extractor {
         List<String> formattedClassNames = new ArrayList<String>();
         classNames.forEach(s -> {
             formattedClassNames.add(formatClassName(s));
-            //System.out.println("cn: "+formatClassName(s));
+            SopristecLogManager.logger.trace("cn: "+formatClassName(s));
         });
         List<String> methodNames = getRawMethodNames(
                 formattedClassNames);
         methodNames.forEach(s -> {
-            //System.out.println(String.format("mn %d: ", ++lineCount) + s);
-            System.out.println(s);
+            SopristecLogManager.logger.trace(String.format("mn %d: ", ++lineCount) + s);
+            SopristecLogManager.logger.debug(s);
         });
 
         // ANTLR4 Extraction
@@ -95,6 +95,7 @@ public class Extractor {
                             StandardCharsets.UTF_8));
         } catch (IOException e) {
             e.printStackTrace();
+            SopristecLogManager.logger.error("An error ocurred while tokenizing!. Error message: " + e.getMessage());
         }
 
         // create a buffer of tokens pulled from the lexer
@@ -104,9 +105,15 @@ public class Extractor {
         // create a parser that feeds off the tokens buffer
         Java8Parser parser = new Java8Parser(tokens);
 
+        // NOTE: Although we could use classBody() instead of classDeclaration(), it throws
+        //       even more errors because the whole text is missing many elements.
+        //       Hence, split the array when declarations of style (Compiled from "InputCommand.java")
+        //       are found and use several trees to walk through.
+        // TODO: Find the way to make the output verbose or not
         ParseTree tree = parser.classDeclaration();
+
         // Print LISP-style tree
-        System.out.println(tree.toStringTree(parser));
+        SopristecLogManager.logger.trace(tree.toStringTree(parser));
 
         // Walk tree and listen for records
         ParseTreeWalker walker = new ParseTreeWalker();
@@ -134,7 +141,7 @@ public class Extractor {
             return RuntimeTask.executeCommand(
                     new String[] {"jar", "tf", inputFilename});
         } catch (IOException e) {
-            System.out.println("An error ocurred while trying to extract CLASS NAMES!");
+            SopristecLogManager.logger.error("An error ocurred while trying to extract CLASS NAMES!");
             e.printStackTrace();
         }
         return new ArrayList<String>();
@@ -142,7 +149,7 @@ public class Extractor {
 
     private List<String> getRawMethodNames(List<String> classNames){
         if(classNames.size() == 0){
-            System.out.println("There are no classes to extract methods to!");
+            SopristecLogManager.logger.info("There are no classes to extract methods to!");
             return new ArrayList<String>();
         }
         List<String> initialCommands = Arrays.asList(
@@ -154,7 +161,7 @@ public class Extractor {
         try {
             return RuntimeTask.executeCommand(commands.toArray(new String[0]));
         } catch (IOException e) {
-            System.out.println("An error occurred while trying to extract METHOD NAMES!");
+            SopristecLogManager.logger.error("An error occurred while trying to extract METHOD NAMES!");
             e.printStackTrace();
         }
         return new ArrayList<>();

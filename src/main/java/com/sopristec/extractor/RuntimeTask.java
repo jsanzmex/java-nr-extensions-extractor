@@ -11,28 +11,26 @@ public class RuntimeTask {
     public static List<String> executeCommand(String[] commands) throws IOException {
         Runtime rt = Runtime.getRuntime();
         Process prc = rt.exec(commands);
-/*
         for(String s: commands){
-            System.out.println("commands: " + s);
+            SopristecLogManager.logger.trace("commands: " + s);
         }
-*/
         BufferedReader stdInput = new BufferedReader(new
                 InputStreamReader(prc.getInputStream()));
 
         BufferedReader stdError = new BufferedReader(new
                 InputStreamReader(prc.getErrorStream()));
 
-        // System.out.println("Here is the standard output of the command:\n");
+        SopristecLogManager.logger.trace("Here is the standard output of the command:\n");
         List<String> output = new ArrayList<String>();
         String s = null;
         while ((s = stdInput.readLine()) != null) {
-            //System.out.println(s);
+            SopristecLogManager.logger.trace(s);
             output.add(s);
         }
 
-        // System.out.println("Here is the standard error of the command (if any):\n");
+        SopristecLogManager.logger.trace("Here is the standard error of the command (if any):\n");
         while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
+            SopristecLogManager.logger.trace(s);
         }
         return output;
     }

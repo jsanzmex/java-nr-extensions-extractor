@@ -37,7 +37,7 @@ public class MethodsCommand extends Command {
     @Override
     public boolean isValid() {
         if (!shouldExtractPrivate && !shouldExtractPublic){
-            System.out.println("\"-Dmethods\" argument is invalid. Will extract PUBLIC methods.");
+            SopristecLogManager.logger.info("\"-Dmethods\" argument is invalid. Will extract PUBLIC methods.");
             shouldExtractPublic = true;
         }
         return true;

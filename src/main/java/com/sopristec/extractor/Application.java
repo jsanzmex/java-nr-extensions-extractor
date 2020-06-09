@@ -1,5 +1,8 @@
 package com.sopristec.extractor;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -14,6 +17,9 @@ public class Application {
     private static long startTime;
 
     public static void main(String[] args) {
+
+        // Set log level
+        setLogLevel();
 
         // Beginning of extraction
         recordStartTime();
@@ -74,7 +80,6 @@ public class Application {
             e.printStackTrace();
         }
 
-
         // End-of-extraction
         logDuration();
     }
@@ -94,8 +99,39 @@ public class Application {
     }
 
     private static void logDuration(){
-        System.out.println("Methods extraction and parsing took " +
+        SopristecLogManager.logger.info("Methods extraction and parsing took " +
                 (System.nanoTime() - startTime)/1000000 + " milliseconds.");
     }
     //endregion
+
+    // region Logger Configuration
+    private static void setLogLevel() {
+        // Inspired on Neo's answer:
+        // https://stackoverflow.com/questions/7126709/how-do-i-set-log4j-level-on-the-command-line
+        if (Boolean.getBoolean("log4j.trace")) {
+            Configurator.setLevel("com.sopristec.extractor", Level.TRACE);
+            return;
+        }else if(Boolean.getBoolean("log4j.debug")){
+            Configurator.setLevel("com.sopristec.extractor", Level.DEBUG);
+            return;
+        }else if(Boolean.getBoolean("log4j.info")){
+            Configurator.setLevel("com.sopristec.extractor", Level.INFO);
+            return;
+        }else if(Boolean.getBoolean("log4j.warn")){
+            Configurator.setLevel("com.sopristec.extractor", Level.WARN);
+            return;
+        }else if(Boolean.getBoolean("log4j.error")){
+            Configurator.setLevel("com.sopristec.extractor", Level.ERROR);
+            return;
+        }else if(Boolean.getBoolean("log4j.fatal")){
+            Configurator.setLevel("com.sopristec.extractor", Level.FATAL);
+            return;
+        }else if(Boolean.getBoolean("log4j.off")){
+            Configurator.setLevel("com.sopristec.extractor", Level.OFF);
+            return;
+        }
+
+        Configurator.setLevel("com.sopristec.extractor", Level.INFO);
+    }
+    // endregion
 }

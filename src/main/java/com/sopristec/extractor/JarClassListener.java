@@ -14,36 +14,36 @@ public class JarClassListener extends Java8ParserBaseListener {
     @Override
     public void enterNormalClassDeclaration(Java8Parser.NormalClassDeclarationContext ctx) {
         super.enterNormalClassDeclaration(ctx);
-        System.out.println("enterNormalClassDeclaration.Identifier: " + ctx.Identifier().toString());
+        SopristecLogManager.logger.trace("enterNormalClassDeclaration.Identifier: " + ctx.Identifier().toString());
     }
 
     @Override
     public void enterClassModifier(Java8Parser.ClassModifierContext ctx) {
         super.enterClassModifier(ctx);
-        System.out.println("enterClassModifier: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterClassModifier: " + ctx.getText());
     }
 
     @Override
     public void enterMethodModifier(Java8Parser.MethodModifierContext ctx) {
         super.enterMethodModifier(ctx);
-        System.out.println("enterMethodModifier: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterMethodModifier: " + ctx.getText());
     }
 
     @Override
     public void enterMethodDeclarator(Java8Parser.MethodDeclaratorContext ctx) {
         super.enterMethodDeclarator(ctx);
-        System.out.println("enterMethodDeclarator: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterMethodDeclarator: " + ctx.getText());
     }
 
     @Override
     public void enterFormalParameterList(Java8Parser.FormalParameterListContext ctx) {
-        System.out.println("enterFormalParameterList: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterFormalParameterList: " + ctx.getText());
         super.enterFormalParameterList(ctx);
     }
 
     @Override
     public void enterClassBodyDeclaration(Java8Parser.ClassBodyDeclarationContext ctx) {
-        System.out.println("enterClassBodyDeclaration: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterClassBodyDeclaration: " + ctx.getText());
         super.enterClassBodyDeclaration(ctx);
     }
 
@@ -57,7 +57,7 @@ public class JarClassListener extends Java8ParserBaseListener {
                 isNotMethod(ctx.getText())){
             return;
         }
-        System.out.println("enterClassMemberDeclaration: " + ctx.getText());
+        SopristecLogManager.logger.trace("enterClassMemberDeclaration: " + ctx.getText());
     }
 
     // Another way to say it is class member

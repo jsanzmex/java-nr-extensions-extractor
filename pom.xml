@@ -20,6 +20,16 @@
             <artifactId>antlr4-runtime</artifactId>
             <version>4.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.12.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -48,8 +58,10 @@
             <!-- plugin to create a self-contained portable package
                  This allows us to execute our packaged application with:
                  java -cp target/my-application-1.0-jar-with-dependencies.jar com.example.Main
-               -->
-            <!-- PREFERED TO USE INTELLIJ's PROJECT STRUCTURE: https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637-->
+
+                PREFERED TO USE INTELLIJ's PROJECT STRUCTURE: https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637
+
+            -->
             <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
