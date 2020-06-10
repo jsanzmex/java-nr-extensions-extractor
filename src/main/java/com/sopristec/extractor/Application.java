@@ -26,8 +26,7 @@ public class Application {
         ExtractorConfig config = new ExtractorConfig();
 
         // Step 1. Configure input JAR path
-        InputCommand input = new InputCommand(
-                System.getProperty(INPUT_OPTION));
+        InputCommand input = new InputCommand(System.getProperty(INPUT_OPTION));
         if(!input.isValid()){
             return;
         }

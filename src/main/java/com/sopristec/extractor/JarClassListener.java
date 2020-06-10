@@ -42,12 +42,6 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     @Override
-    public void enterClassBodyDeclaration(Java8Parser.ClassBodyDeclarationContext ctx) {
-        SopristecLogManager.logger.trace("enterClassBodyDeclaration: " + ctx.getText());
-        super.enterClassBodyDeclaration(ctx);
-    }
-
-    @Override
     public void enterClassMemberDeclaration(Java8Parser.ClassMemberDeclarationContext ctx) {
         super.enterClassMemberDeclaration(ctx);
         if(     ctx.getText().isEmpty() ||

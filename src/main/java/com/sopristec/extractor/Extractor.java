@@ -18,28 +18,29 @@ public class Extractor {
 
     //region Input Mocks
     final static String[] inputMocks = new String[]{
-            "public class MethodsCommand extends Command {\n" +
-                    "  public StringBuilder extensionsBody;\n" +
-                    "  public MethodsCommand(String, StringBuilder);\n" +
-                    "  public boolean isValid(String, StringBuilder);\n" +
-                    "  public void execute(String, StringBuilder);\n" +
-                    "}\n",
-            "public class MethodsCommand extends Command {\n" +
-                    "  public java.lang.StringBuilder extensionsBody;\n" +
-                    "  public MethodsCommand(String, StringBuilder);\n" +
-                    "  public boolean isValid(String, StringBuilder);\n" +
-                    "  public void execute(String, StringBuilder);\n" +
-                    "}\n",
-            "public class MethodsCommand extends Command {\n" +
-                    "  public java.lang.StringBuilder extensionsBody;\n" +
-                    "  public MethodsCommand(java.lang.String, java.lang.StringBuilder);\n" +
-                    "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
-                    "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
-                    "}\n",
             "public class com.sopristec.newrelic.InputCommand extends com.sopristec.newrelic.Command {\n" +
                     "  public com.sopristec.newrelic.InputCommand(java.lang.StringAtConstructor);\n" +
                     "  public boolean isValid(java.lang.String, java.lang.StringBuilder);\n" +
                     "  public void execute(java.lang.String, java.lang.StringBuilder);\n" +
+                    "}",
+            "Compiled from \"ExtensionsExtractor.java\"\n" +
+                    "public class com.sopristec.newrelic.ExtensionsExtractor {\n" +
+                    "  public com.sopristec.newrelic.ExtensionsExtractor();\n" +
+                    "  public static void main(java.lang.String[]);\n" +
+                    "}\n" +
+                    "Compiled from \"Command.java\"\n" +
+                    "public abstract class com.sopristec.newrelic.Command {\n" +
+                    "  public com.sopristec.newrelic.Command(java.lang.String);\n" +
+                    "  public java.lang.String getCommandOptions();\n" +
+                    "  public abstract boolean isValid();\n" +
+                    "  public abstract void execute();\n" +
+                    "  public static java.lang.String dasherizeName(java.lang.Class<? extends com.sopristec.newrelic.Command>);\n" +
+                    "}\n" +
+                    "Compiled from \"OutputCommand.java\"\n" +
+                    "public class com.sopristec.newrelic.OutputCommand extends com.sopristec.newrelic.Command {\n" +
+                    "  public com.sopristec.newrelic.OutputCommand(java.lang.String, java.lang.String);\n" +
+                    "  public boolean isValid();\n" +
+                    "  public void execute();\n" +
                     "}"
     };
     //endregion
@@ -80,8 +81,29 @@ public class Extractor {
                 String.format("%n"),
                 methodNames);
         // TODO: Eliminate this test
-        input = inputMocks[3];
+        input = inputMocks[1];
 
+        String[] lines = input.split("\\n");
+        int i = 0;
+        StringBuilder lastClass = new StringBuilder();
+        for(; i < lines.length; i++){
+            if(lines[i].indexOf("Compiled from") >= 0)
+            {
+                if(lastClass.length() != 0){
+                    processMethodInput(lastClass.toString());
+                    lastClass.setLength(0);
+                }
+            }else{
+                lastClass.append(lines[i]);
+            }
+        }
+
+        if(lastClass.length() > 0){
+            processMethodInput(lastClass.toString());
+        }
+    }
+
+    private void processMethodInput(String input) {
         InputStream stream =
                 new ByteArrayInputStream(unsetDots(input)
                         .getBytes(StandardCharsets.UTF_8));
@@ -109,7 +131,6 @@ public class Extractor {
         //       even more errors because the whole text is missing many elements.
         //       Hence, split the array when declarations of style (Compiled from "InputCommand.java")
         //       are found and use several trees to walk through.
-        // TODO: Find the way to make the output verbose or not
         ParseTree tree = parser.classDeclaration();
 
         // Print LISP-style tree
