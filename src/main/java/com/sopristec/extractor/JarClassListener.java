@@ -29,6 +29,12 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     @Override
+    public void enterConstructorDeclarator(Java8Parser.ConstructorDeclaratorContext ctx) {
+        super.enterConstructorDeclarator(ctx);
+        SopristecLogManager.logger.trace("enterConstructorDeclarator.simpleTypeName: " + ctx.simpleTypeName().getText());
+    }
+
+    @Override
     public void enterClassModifier(Java8Parser.ClassModifierContext ctx) {
         super.enterClassModifier(ctx);
         SopristecLogManager.logger.trace("enterClassModifier: " + ctx.getText());

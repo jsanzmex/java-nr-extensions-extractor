@@ -465,7 +465,7 @@ formalParameters
 	;
 
 formalParameter
-	:	variableModifier* unannType variableDeclaratorId
+	:	variableModifier* unannType variableDeclaratorId?
 	;
 
 variableModifier
@@ -474,7 +474,7 @@ variableModifier
 	;
 
 lastFormalParameter
-	:	variableModifier* unannType annotation* '...' variableDeclaratorId
+	:	variableModifier* unannType annotation* '...' variableDeclaratorId?
 	|	formalParameter
 	;
 
