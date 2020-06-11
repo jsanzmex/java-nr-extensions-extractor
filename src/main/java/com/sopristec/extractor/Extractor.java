@@ -41,11 +41,15 @@ public class Extractor {
                     "  public com.sopristec.newrelic.OutputCommand(java.lang.String, java.lang.String);\n" +
                     "  public boolean isValid();\n" +
                     "  public void execute();\n" +
+                    "}\n" +
+                    "Compiled from \"TestAbstractClass.java\"\n" +
+                    "public abstract class com.bursatec.bmv.CustomHydraPropertyResourceConfigurer implements org.springframework.beans.factory.config.BeanFactoryPostProcessor,org.springframework.core.Ordered {\n" +
+                    "  protected final org.apache.commons.logging.Log logger;\n" +
+                    "  public com.bursatec.bmv.CustomHydraPropertyResourceConfigurer();\n" +
+                    "  public void setOrder(int);\n" +
                     "}"
     };
     //endregion
-
-    private static final String DOT = "DOTOD";
 
     private final String inputFilename;
     private final ExtensionsXmlEncoder encoder;
@@ -75,8 +79,11 @@ public class Extractor {
             SopristecLogManager.logger.debug(s);
         });
 
+
         // ANTLR4 Extraction
-        // Load input string into ANT Input Stream
+        JarClassListener listener = new JarClassListener(encoder);
+
+        // Load input string into AN Input Stream
         String input = String.join(
                 String.format("%n"),
                 methodNames);
@@ -90,7 +97,7 @@ public class Extractor {
             if(lines[i].indexOf("Compiled from") >= 0)
             {
                 if(lastClass.length() != 0){
-                    processMethodInput(lastClass.toString());
+                    processMethodInput(lastClass.toString(), listener);
                     lastClass.setLength(0);
                 }
             }else{
@@ -99,13 +106,13 @@ public class Extractor {
         }
 
         if(lastClass.length() > 0){
-            processMethodInput(lastClass.toString());
+            processMethodInput(lastClass.toString(), listener);
         }
     }
 
-    private void processMethodInput(String input) {
+    private void processMethodInput(String input, JarClassListener listener) {
         InputStream stream =
-                new ByteArrayInputStream(unsetDots(input)
+                new ByteArrayInputStream(TextUtils.unsetDots(input)
                         .getBytes(StandardCharsets.UTF_8));
 
         // create a lexer that feeds off of input CharStream
@@ -138,7 +145,6 @@ public class Extractor {
 
         // Walk tree and listen for records
         ParseTreeWalker walker = new ParseTreeWalker();
-        JarClassListener listener = new JarClassListener(encoder);
         walker.walk(listener, tree);
     }
 
@@ -187,19 +193,4 @@ public class Extractor {
         }
         return new ArrayList<>();
     }
-
-    private String unsetDots(String input){
-        // DOTS (.) are not considered in the ANTLR4 Java's grammar.
-        // But since "javap" returns fully qualified class names,
-        // we need a way to deal with those long "dotted" class names.
-        // The easies solution is to replace all DOT occurrences by a
-        // replacement, rather than updating the grammar:
-        return input.replaceAll("\\.",DOT);
-    }
-
-    private String resetDots(String input){
-        // The opposite operation as above's method:
-        return input.replaceAll(DOT,"\\.");
-    }
-
 }

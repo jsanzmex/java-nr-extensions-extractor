@@ -53,7 +53,24 @@ This is official's ANTLR4 maven plugin page. It starts explaining how to add the
 The usage section explains the command `mvn antlr4:antlr4` and all its arguments.
 <https://www.antlr.org/api/maven-plugin/latest/antlr4-mojo.html>
 
-### Java 8 Grammar & Parser/Lexer file generation
+### Give your Maven project access to ANTL4 compiled classes with build-helper-maven-plugin
+In order to add generated sources to the sources pathes of a project the add-sources goal from the maven helper plugin can be used.
+When the sources are generated they are immediately picked up by eclipse and compilation errors are avoided.
+
+Reference: <http://www.jeeatwork.com/?p=166>
+
+## Maven strategies to package JAR Artifacts
+This is a very nice guide explaining all the pros & cons of differente packaging strategies:
+<https://www.baeldung.com/executable-jar-with-maven>
+
+This project uses IntelliJ's Artifact creation strategy, which is explained here:
+<https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637>
+
+Originally this project used *maven-assembly-plugin* because it lets you include other JAR dependencies into a single JAR file.
+Official documentation here:
+<https://maven.apache.org/plugins/maven-assembly-plugin/usage.html>
+
+## Java 8 Grammar & Parser/Lexer file generation
 Here you can find Java8 grammar files for Parser and Lexer. You will need them for this project:
 <https://github.com/antlr/grammars-v4/tree/master/java/java8>
 
@@ -71,31 +88,19 @@ src/main/antlr4
 
 - Then execute `mvn antlr4:antlr4`. It will save the generated files to *src/<PACKAGE_PATH>/*
 
-#### There is one Gotcha
+### There is one Gotcha
 If you want to have your Java classes under a package structure, e.g. 'org.example.myclass', your grammar files must be under the same folder structure your Java classes package.
 Otherwise, your classes won't have access to ANTLR4 generated files.
 
-#### ANTLR4 Tree walking
+## ANTLR4 Tree walking
 Here other ways to walk a tree, without an explicit Listening class:
 <https://stackoverflow.com/questions/23305232/using-antlr-to-get-identifiers-and-function-names>
 <https://stackoverflow.com/questions/15050137/once-grammar-is-complete-whats-the-best-way-to-walk-an-antlr-v4-tree>
 <https://stackoverflow.com/questions/42882152/accessing-nested-parse-trees-java-antlr>
 
+## Composing XML Extensions file for NewRelic Java Agent
 
-### Give your Maven project access to ANTL4 compiled classes with build-helper-maven-plugin
-In order to add generated sources to the sources pathes of a project the add-sources goal from the maven helper plugin can be used.
-When the sources are generated they are immediately picked up by eclipse and compilation errors are avoided.
+This is a quick guide to instrument a Standalone Java application: 
+<https://docs.newrelic.com/docs/agents/java-agent/custom-instrumentation/java-xml-instrumentation-examples>
 
-Reference: <http://www.jeeatwork.com/?p=166>
-
-### Maven strategies to package JAR Artifacts
-This is a very nice guide explaining all the pros & cons of differente packaging strategies:
-<https://www.baeldung.com/executable-jar-with-maven>
-
-This project uses IntelliJ's Artifact creation strategy, which is explained here:
-<https://stackoverflow.com/questions/1082580/how-to-build-jars-from-intellij-properly/45303637#45303637>
-
-Originally this project used *maven-assembly-plugin* because it lets you include other JAR dependencies into a single JAR file.
-Official documentation here:
-<https://maven.apache.org/plugins/maven-assembly-plugin/usage.html>
 
