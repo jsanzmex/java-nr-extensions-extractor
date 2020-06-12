@@ -12,6 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 public class ExtensionsXmlEncoder {
 
@@ -51,11 +52,22 @@ public class ExtensionsXmlEncoder {
         return classNameElement;
     }
 
-    public Node getMethodNode(String methodName) {
+    public Node getMethodNode(String methodName, ArrayList<String> parameterList) {
+        // Create and append method and name elements
         Element methodElement = doc.createElement("method");
         Element methodNameElement = doc.createElement("name");
         methodNameElement.appendChild(doc.createTextNode(methodName));
         methodElement.appendChild(methodNameElement);
+
+        // Create and append parameters and its type elements
+        Element parametersElement = doc.createElement("parameters");
+        parameterList.forEach(parameter -> {
+            Element typeElement = doc.createElement("type");
+            typeElement.appendChild(doc.createTextNode(parameter));
+            parametersElement.appendChild(typeElement);
+        });
+        methodElement.appendChild(parametersElement);
+
         return methodElement;
     }
 

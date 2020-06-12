@@ -56,7 +56,7 @@ public class Klass extends CodeIdentity {
 
     public ArrayList<Method> getMethodList()
     {
-        return methodList;
+        return new ArrayList<Method>(methodList);
     }
     // endregion
 

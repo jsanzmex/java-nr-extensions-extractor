@@ -41,4 +41,9 @@ public abstract class Method extends CodeIdentity {
         parameterList.add(type);
     }
 
+    public ArrayList<String> getParameterList()
+    {
+        return new ArrayList<>(parameterList);
+    }
+
 }

@@ -116,7 +116,7 @@ public class Extractor {
             Node klassNameNode = encoder.getClassNode(klass.getName());
             encoder.appendToPointcutNode(klassNameNode);
             klass.getMethodList().forEach(method -> {
-                Node methodNode = encoder.getMethodNode(method.getName());
+                Node methodNode = encoder.getMethodNode(method.getName(), method.getParameterList());
                 encoder.appendToPointcutNode(methodNode);
             });
         });
