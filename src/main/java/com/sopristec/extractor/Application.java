@@ -67,7 +67,7 @@ public class Application {
         }
 
         // Step 6. Extract method names
-        Extractor extractor = new Extractor(config.inputPath, encoder);
+        Extractor extractor = new Extractor(config, encoder);
         extractor.execute();
 
         // Step 7. Write file

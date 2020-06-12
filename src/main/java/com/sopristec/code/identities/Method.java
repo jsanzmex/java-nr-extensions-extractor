@@ -1,5 +1,6 @@
 package com.sopristec.code.identities;
 
+import com.sopristec.extractor.ExtractorConfig;
 import com.sopristec.extractor.SopristecLogManager;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public abstract class Method extends CodeIdentity {
             }
         } else {
             if (this instanceof Constructor ){
-                this.name = simpleTypeName;
+                this.name = simpleTypeName.trim();
             }else{
                 SopristecLogManager.logger.trace("Could not find a valid method name for a RegularMethod in 'simple type name' : " + simpleTypeName);
             }
@@ -46,4 +47,12 @@ public abstract class Method extends CodeIdentity {
         return new ArrayList<>(parameterList);
     }
 
+    @Override
+    public boolean shouldBeInstrumented(ExtractorConfig config) {
+        if ( this.isAbstract() || this instanceof Constructor || this.getName().toLowerCase().equals("main")){
+            return false;
+        }
+        return  (this.isPublic() && config.shouldExtractPublic) ||
+                config.shouldExtractPrivate;
+    }
 }

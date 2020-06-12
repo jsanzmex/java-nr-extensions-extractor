@@ -1,5 +1,6 @@
 package com.sopristec.code.identities;
 
+import com.sopristec.extractor.ExtractorConfig;
 import com.sopristec.extractor.SopristecLogManager;
 
 import java.util.ArrayList;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
  */
 public class Klass extends CodeIdentity {
 
-    private Constructor constructor;
     private final ArrayList<Method> methodList = new ArrayList<Method>();
     private final ArrayList<Modifier> unassignedMethodModifierList = new ArrayList<Modifier>();
 
@@ -22,7 +22,6 @@ public class Klass extends CodeIdentity {
     public void addMethod(Method method)
     {
         if(method instanceof Constructor){
-            constructor = (Constructor) method;
             claimUnassignedModifiers(method);
             methodList.add(method);
         }else if(method instanceof RegularMethod){
@@ -56,7 +55,23 @@ public class Klass extends CodeIdentity {
 
     public ArrayList<Method> getMethodList()
     {
-        return new ArrayList<Method>(methodList);
+        return new ArrayList<>(methodList);
+    }
+
+    @Override
+    public boolean shouldBeInstrumented(ExtractorConfig config)
+    {
+        if (this.isAbstract()){ return false; }
+
+        // The less intuitive case is when a class is public but its methods are not public.
+        // Count instrumentable methods and make sure they are >= 0
+        int instrumentableMethods = methodList.stream().mapToInt(
+                method -> method.shouldBeInstrumented(config) ? 1 : 0).sum();
+
+        if (instrumentableMethods == 0){ return false; }
+
+        return  (this.isPublic() && config.shouldExtractPublic) ||
+                config.shouldExtractPrivate;
     }
     // endregion
 

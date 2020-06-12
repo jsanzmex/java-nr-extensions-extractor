@@ -1,5 +1,7 @@
 package com.sopristec.code.identities;
 
+import com.sopristec.extractor.ExtractorConfig;
+
 import java.util.ArrayList;
 
 /**
@@ -13,7 +15,7 @@ public abstract class CodeIdentity {
     protected ArrayList<Modifier> modifiers = new ArrayList<>();
 
     protected CodeIdentity(String name) {
-        this.name = name;
+        this.name = name.trim();
     }
 
     public void addModifier(String modifierStr)
@@ -24,6 +26,7 @@ public abstract class CodeIdentity {
                 modifiers.add(m);
         }
     }
+
 
     public boolean isPublic()
     {
@@ -47,4 +50,5 @@ public abstract class CodeIdentity {
 
     public String getName() { return name; }
 
+    public abstract boolean shouldBeInstrumented(ExtractorConfig config);
 }

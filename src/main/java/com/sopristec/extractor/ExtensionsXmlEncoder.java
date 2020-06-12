@@ -66,7 +66,9 @@ public class ExtensionsXmlEncoder {
             typeElement.appendChild(doc.createTextNode(parameter));
             parametersElement.appendChild(typeElement);
         });
-        methodElement.appendChild(parametersElement);
+        if(parameterList.size() > 0){
+            methodElement.appendChild(parametersElement);
+        }
 
         return methodElement;
     }

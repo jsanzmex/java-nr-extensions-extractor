@@ -1,5 +1,8 @@
 package com.sopristec.extractor;
 
+import com.sopristec.code.identities.Constructor;
+import com.sopristec.code.identities.Klass;
+import com.sopristec.code.identities.Method;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -52,15 +55,16 @@ public class Extractor {
     };
     //endregion
 
-    private final String inputFilename;
     private final ExtensionsXmlEncoder encoder;
+    private final ExtractorConfig config;
+    private Integer lineCount = 0;
 
-    public Extractor(String inputFilename, ExtensionsXmlEncoder encoder) {
-        this.inputFilename = inputFilename;
+    // region API
+
+    public Extractor(ExtractorConfig config, ExtensionsXmlEncoder encoder) {
+        this.config = config;
         this.encoder = encoder;
     }
-
-    private Integer lineCount = 0;
 
     public void execute(){
 
@@ -113,15 +117,21 @@ public class Extractor {
         // Get klasses and compose XML with them
         encoder.appendAndGetPointcutElement(true);
         listener.getKlasses().forEach(klass -> {
-            Node klassNameNode = encoder.getClassNode(klass.getName());
-            encoder.appendToPointcutNode(klassNameNode);
-            klass.getMethodList().forEach(method -> {
-                Node methodNode = encoder.getMethodNode(method.getName(), method.getParameterList());
-                encoder.appendToPointcutNode(methodNode);
-            });
+            if(klass.shouldBeInstrumented(config)) {
+                Node klassNameNode = encoder.getClassNode(klass.getName());
+                encoder.appendToPointcutNode(klassNameNode);
+                klass.getMethodList().forEach(method -> {
+                    if(method.shouldBeInstrumented(config)){
+                        Node methodNode = encoder.getMethodNode(method.getName(), method.getParameterList());
+                        encoder.appendToPointcutNode(methodNode);
+                    }
+                });
+            }
         });
 
     }
+
+    // endregion
 
     private void processAntlr4Input(String input, JarClassListener listener) {
         InputStream stream =
@@ -179,7 +189,7 @@ public class Extractor {
     private List<String> getRawClassNames(){
         try {
             return RuntimeTask.executeCommand(
-                    new String[] {"jar", "tf", inputFilename});
+                    new String[] {"jar", "tf", config.inputFilename});
         } catch (IOException e) {
             SopristecLogManager.logger.error("An error ocurred while trying to extract CLASS NAMES!");
             e.printStackTrace();
@@ -193,7 +203,7 @@ public class Extractor {
             return new ArrayList<>();
         }
         List<String> initialCommands = Arrays.asList(
-                "javap", "-classpath", inputFilename);
+                "javap", "-classpath", config.inputFilename);
         List<String> commands = new ArrayList<>(
                 initialCommands.size() + classNames.size());
         commands.addAll(initialCommands);
