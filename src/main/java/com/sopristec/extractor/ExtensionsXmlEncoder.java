@@ -12,12 +12,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
 
 public class ExtensionsXmlEncoder {
 
-    private Document doc = null;
-    private Element instrumentationElement = null;
+    private final Document doc;
+    private final Element instrumentationElement;
     private Element pointcutElement = null;
 
     public ExtensionsXmlEncoder(String metricPrefixValue) throws ParserConfigurationException {
@@ -42,9 +41,9 @@ public class ExtensionsXmlEncoder {
         return (Element) instrumentationElement.appendChild(pointcutElement);
     }
 
-    public Node appendToPointcutNode(Node node)
+    public void appendToPointcutNode(Node node)
     {
-        return pointcutElement.appendChild(node);
+        pointcutElement.appendChild(node);
     }
 
     public Node getClassNode(String name){
@@ -52,29 +51,6 @@ public class ExtensionsXmlEncoder {
         classNameElement.appendChild(doc.createTextNode(name));
         pointcutElement.appendChild(classNameElement);
         return classNameElement;
-    }
-
-    public Node getMethodNode(String name, ArrayList<String> parameterTypes){
-        // 1. Create parent method node
-        Element methodNode = doc.createElement("method");
-        pointcutElement.appendChild(methodNode);
-
-        // 2. Create method name node
-        Element nameNode = doc.createElement("name");
-        nameNode.appendChild(doc.createTextNode(name));
-        methodNode.appendChild(nameNode);
-
-        // 3. Create parameters node and it's children
-        Element paramsNode = doc.createElement("parameters");
-        parameterTypes.forEach( s ->{
-                Element typeNode = doc.createElement("type");
-                typeNode.appendChild(doc.createTextNode(s));
-        });
-        methodNode.appendChild(paramsNode);
-
-        // 4. Finally append to pointcut node
-        pointcutElement.appendChild(methodNode);
-        return methodNode;
     }
 
     public String encode(){
@@ -85,6 +61,7 @@ public class ExtensionsXmlEncoder {
         } catch (TransformerConfigurationException e) {
             e.printStackTrace();
         }
+        assert transformer != null;
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
         StringWriter writer = new StringWriter();
         try {

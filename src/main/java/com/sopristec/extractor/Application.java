@@ -34,8 +34,8 @@ public class Application {
 
         // Step 2. Configure "methods" attribute
         MethodsCommand methods = new MethodsCommand(
-                System.getProperty(METHODS_OPTION),
-                config.inputPath);
+                System.getProperty(METHODS_OPTION)
+        );
         methods.setup(config);
         if(!methods.isValid()){
             return;
@@ -82,15 +82,6 @@ public class Application {
         // End-of-extraction
         logDuration();
     }
-
-    // region Utils
-
-    private static String composeDefaultOutputFilename(String inputFilename){
-        String[] temp = inputFilename.split("\\.");
-        return temp[temp.length-2] + ".xml";
-    }
-
-    //endregion
 
     //region Record duration
     private static void recordStartTime(){

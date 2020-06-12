@@ -21,8 +21,8 @@ public class RuntimeTask {
                 InputStreamReader(prc.getErrorStream()));
 
         SopristecLogManager.logger.trace("Here is the standard output of the command:\n");
-        List<String> output = new ArrayList<String>();
-        String s = null;
+        List<String> output = new ArrayList<>();
+        String s;
         while ((s = stdInput.readLine()) != null) {
             SopristecLogManager.logger.trace(s);
             output.add(s);

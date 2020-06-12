@@ -10,7 +10,12 @@ import java.util.regex.Pattern;
  */
 public class OutputCommand extends Command {
 
-    static final String XML_EXTENSION = ".xml";
+    static final String XML_EXTENSION;
+
+    static {
+        XML_EXTENSION = ".xml";
+    }
+
     private String filename;
 
     public OutputCommand(String options){

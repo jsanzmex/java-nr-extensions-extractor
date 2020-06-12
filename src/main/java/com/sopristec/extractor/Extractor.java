@@ -68,7 +68,7 @@ public class Extractor {
         List<String> classNames = getRawClassNames();
         Predicate<String> isNotClass = this::indexOfClassGTOne;
         removeNonClasses(classNames, isNotClass);
-        List<String> formattedClassNames = new ArrayList<String>();
+        List<String> formattedClassNames = new ArrayList<>();
         classNames.forEach(s -> {
             formattedClassNames.add(formatClassName(s));
             SopristecLogManager.logger.trace("cn: "+formatClassName(s));
@@ -95,7 +95,7 @@ public class Extractor {
         int i = 0;
         StringBuilder lastClass = new StringBuilder();
         for(; i < lines.length; i++){
-            if(lines[i].indexOf("Compiled from") >= 0)
+            if(lines[i].contains("Compiled from"))
             {
                 if(lastClass.length() != 0){
                     processAntlr4Input(lastClass.toString(), listener);
@@ -180,13 +180,13 @@ public class Extractor {
             SopristecLogManager.logger.error("An error ocurred while trying to extract CLASS NAMES!");
             e.printStackTrace();
         }
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     private List<String> getRawMethodNames(List<String> classNames){
         if(classNames.size() == 0){
             SopristecLogManager.logger.info("There are no classes to extract methods to!");
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         List<String> initialCommands = Arrays.asList(
                 "javap", "-classpath", inputFilename);

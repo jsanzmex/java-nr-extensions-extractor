@@ -11,13 +11,12 @@ import java.util.regex.Pattern;
  */
 public abstract class Method extends CodeIdentity {
 
-    protected ArrayList<String> parameterList = new ArrayList<String>();
-
-    private final String METHOD_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9]+\\(";
+    protected ArrayList<String> parameterList = new ArrayList<>();
 
     public Method(String simpleTypeName) {
         super("");
 
+        String METHOD_NAME_PATTERN = "[a-zA-Z][a-zA-Z0-9]+\\(";
         Pattern pattern = Pattern.compile(METHOD_NAME_PATTERN);
         Matcher matcher = pattern.matcher(simpleTypeName);
         if (matcher.find()) {

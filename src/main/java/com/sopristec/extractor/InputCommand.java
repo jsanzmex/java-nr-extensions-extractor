@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class InputCommand extends Command  {
 
-    private String inputPath = null;
+    private String inputPath;
 
     public InputCommand(String options){
         super(options);

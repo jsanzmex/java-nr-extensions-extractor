@@ -4,7 +4,7 @@ package com.sopristec.extractor;
 //  https://bugfactory.io/blog/organizing-java-command-line-utilities-with-the-command-pattern/
 
 public abstract class Command {
-    private String commandOptions = new String();
+    private String commandOptions;
 
     public Command(String options) {
         this.commandOptions = options;
