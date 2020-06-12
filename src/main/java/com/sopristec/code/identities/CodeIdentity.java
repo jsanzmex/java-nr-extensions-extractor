@@ -8,34 +8,40 @@ import java.util.ArrayList;
  */
 public abstract class CodeIdentity {
 
-    protected ArrayList<Modifier> modifiers;
+    protected String name;
+
+    protected ArrayList<Modifier> modifiers = new ArrayList<>();
+
+    protected CodeIdentity(String name) {
+        this.name = name;
+    }
 
     public void addModifier(String modifierStr)
     {
         Modifier[] modifierValues = Modifier.values();
         for(Modifier m: modifierValues) {
-            if(m.name() == modifierStr.trim().toUpperCase())
+            if(m.name().equals(modifierStr.trim().toUpperCase()))
                 modifiers.add(m);
         }
     }
 
     public boolean isPublic()
     {
-        return modifiers.indexOf(Modifier.PUBLIC) >= 0;
+        return modifiers.contains(Modifier.PUBLIC);
     }
 
     public boolean isStatic()
     {
-        return modifiers.indexOf(Modifier.STATIC) >= 0;
+        return modifiers.contains(Modifier.STATIC);
     }
 
     public boolean isPrivate()
     {
-        return modifiers.indexOf(Modifier.PRIVATE) >= 0;
+        return modifiers.contains(Modifier.PRIVATE);
     }
 
     public boolean isAbstract()
     {
-        return modifiers.indexOf(Modifier.ABSTRACT) >= 0;
+        return modifiers.contains(Modifier.ABSTRACT);
     }
 }
