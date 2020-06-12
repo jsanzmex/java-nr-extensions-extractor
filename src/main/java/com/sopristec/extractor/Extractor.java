@@ -46,11 +46,13 @@ public class Extractor {
                     "  public boolean isValid();\n" +
                     "  public void execute();\n" +
                     "}\n" +
-                    "Compiled from \"TestAbstractClass.java\"\n" +
-                    "public abstract class com.bursatec.bmv.CustomHydraPropertyResourceConfigurer implements org.springframework.beans.factory.config.BeanFactoryPostProcessor,org.springframework.core.Ordered {\n" +
+                    "Compiled from \"TestNonAbstractClassWithMixedMethods.java\"\n" +
+                    "public class com.bursatec.bmv.CustomHydraPropertyResourceConfigurer implements org.springframework.beans.factory.config.BeanFactoryPostProcessor,org.springframework.core.Ordered {\n" +
                     "  protected final org.apache.commons.logging.Log logger;\n" +
-                    "  public com.bursatec.bmv.CustomHydraPropertyResourceConfigurer();\n" +
+                    "  public com.bursatec.bmv.CustomHydraPropertyResourceConfigurer(int,int);\n" +
+                    "  public abstract void execute(int);\n" +
                     "  public void setOrder(int);\n" +
+                    "  public void resetOrder();\n" +
                     "}"
     };
     //endregion
@@ -92,8 +94,8 @@ public class Extractor {
         String input = String.join(
                 String.format("%n"),
                 methodNames);
-        // TODO: Eliminate this test
-        input = inputMocks[1];
+        // UNCOMMENT TO DO HARD-CODED TESTING
+        //input = inputMocks[1];
 
         String[] lines = input.split("\\n");
         int i = 0;
