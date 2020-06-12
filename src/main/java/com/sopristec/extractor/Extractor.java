@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.w3c.dom.Node;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -81,7 +82,7 @@ public class Extractor {
 
 
         // ANTLR4 Extraction
-        JarClassListener listener = new JarClassListener(encoder);
+        JarClassListener listener = new JarClassListener();
 
         // Load input string into AN Input Stream
         String input = String.join(
@@ -97,7 +98,7 @@ public class Extractor {
             if(lines[i].indexOf("Compiled from") >= 0)
             {
                 if(lastClass.length() != 0){
-                    processMethodInput(lastClass.toString(), listener);
+                    processAntlr4Input(lastClass.toString(), listener);
                     lastClass.setLength(0);
                 }
             }else{
@@ -106,11 +107,19 @@ public class Extractor {
         }
 
         if(lastClass.length() > 0){
-            processMethodInput(lastClass.toString(), listener);
+            processAntlr4Input(lastClass.toString(), listener);
         }
+
+        // Get klasses and compose XML with them
+        encoder.getPointcutElement(true);
+        listener.getKlasses().forEach(k -> {
+            Node klassNode = encoder.getClassNode(k.getName());
+            encoder.appendToPointcutNode(klassNode);
+        });
+
     }
 
-    private void processMethodInput(String input, JarClassListener listener) {
+    private void processAntlr4Input(String input, JarClassListener listener) {
         InputStream stream =
                 new ByteArrayInputStream(TextUtils.unsetDots(input)
                         .getBytes(StandardCharsets.UTF_8));

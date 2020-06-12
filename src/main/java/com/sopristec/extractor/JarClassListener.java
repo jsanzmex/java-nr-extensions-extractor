@@ -1,51 +1,36 @@
 package com.sopristec.extractor;
 
+import com.sopristec.code.identities.Klass;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.util.ArrayList;
 
 /**
  * The ANTLR4 listener class.
  */
 public class JarClassListener extends Java8ParserBaseListener {
 
-    private ExtensionsXmlEncoder encoder;
-    private Node lastClassNode;
-    private String lastAccessor = "";
-    private String lastModifier = "";
-
-    public JarClassListener(ExtensionsXmlEncoder encoder){
-        this.encoder = encoder;
-        // There is only one pointcut node, as we cannot know the inter-dependency
-        // between methods and set false start points.
-        encoder.getPointcutElement(true);
-    }
+    private ArrayList<Klass> klassList = new ArrayList<>();
 
     @Override
     public void enterNormalClassDeclaration(Java8Parser.NormalClassDeclarationContext ctx) {
         super.enterNormalClassDeclaration(ctx);
         SopristecLogManager.logger.trace("enterNormalClassDeclaration.Identifier: " + ctx.Identifier().toString());
-        lastClassNode = encoder.getClassNode(TextUtils.resetDots(ctx.Identifier().toString()));
-        encoder.appendToPointcutNode(lastClassNode);
-    }
-
-    @Override
-    public void enterConstructorDeclarator(Java8Parser.ConstructorDeclaratorContext ctx) {
-        super.enterConstructorDeclarator(ctx);
-        SopristecLogManager.logger.trace("enterConstructorDeclarator.simpleTypeName: " + ctx.simpleTypeName().getText());
+        klassList.add(new Klass(TextUtils.resetDots(ctx.Identifier().toString())));
     }
 
     @Override
     public void enterClassModifier(Java8Parser.ClassModifierContext ctx) {
         super.enterClassModifier(ctx);
         SopristecLogManager.logger.trace("enterClassModifier: " + ctx.getText());
-        lastAccessor = "";
-        lastModifier = "";
-        if(isAccessor(ctx.getText())){
-            lastAccessor = ctx.getText();
-        }
-        if(isModifier(ctx.getText())){
-            lastModifier = ctx.getText();
-        }
+        lastKlass().addModifier(ctx.getText());
+    }
+
+    @Override
+    public void enterConstructorDeclarator(Java8Parser.ConstructorDeclaratorContext ctx) {
+        super.enterConstructorDeclarator(ctx);
+        SopristecLogManager.logger.trace("enterConstructorDeclarator.simpleTypeName: " + ctx.simpleTypeName().getText());
     }
 
     @Override
@@ -67,31 +52,16 @@ public class JarClassListener extends Java8ParserBaseListener {
     }
 
     // region Utils
-    private boolean isAccessor(String input)
+    private Klass lastKlass()
     {
-        return  input.toLowerCase().trim().contains("public") ||
-                input.toLowerCase().trim().contains("private") ||
-                input.toLowerCase().trim().contains("protected");
+        return klassList.get(klassList.size() - 1);
     }
+    // endregion
 
-    private boolean isPublic(String input)
+    // region API
+    public ArrayList<Klass> getKlasses()
     {
-        return input.toLowerCase().trim() == "public";
-    }
-
-    private boolean isProtected(String input)
-    {
-        return input.toLowerCase().trim() == "protected";
-    }
-
-    private boolean isModifier(String input)
-    {
-        return  input.toLowerCase().trim().contains("abstract");
-    }
-
-    private boolean isAbstract(String input)
-    {
-        return input.toLowerCase().trim() == "abstract";
+        return new ArrayList<>(klassList);
     }
     // endregion
 
