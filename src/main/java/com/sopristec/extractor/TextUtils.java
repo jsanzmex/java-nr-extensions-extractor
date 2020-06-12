@@ -3,7 +3,6 @@ package com.sopristec.extractor;
 public class TextUtils {
     private static final String DOT = "DOTOD";
 
-
     public static String unsetDots(String input){
         // DOTS (.) are not considered in the ANTLR4 Java's grammar.
         // But since "javap" returns fully qualified class names,

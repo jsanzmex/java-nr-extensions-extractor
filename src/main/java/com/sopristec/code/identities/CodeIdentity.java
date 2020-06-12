@@ -44,4 +44,7 @@ public abstract class CodeIdentity {
     {
         return modifiers.contains(Modifier.ABSTRACT);
     }
+
+    public String getName() { return name; }
+
 }

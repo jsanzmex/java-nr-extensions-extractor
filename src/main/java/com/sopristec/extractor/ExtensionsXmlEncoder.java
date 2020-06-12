@@ -35,22 +35,28 @@ public class ExtensionsXmlEncoder {
         mainRootElement.appendChild(instrumentationElement);
     }
 
-    public Element getPointcutElement(boolean transactionStartPoint){
+    public Element appendAndGetPointcutElement(boolean transactionStartPoint){
         pointcutElement = doc.createElement("pointcut");
         pointcutElement.setAttribute("transactionStartPoint", transactionStartPoint ? "true" : "false");
         return (Element) instrumentationElement.appendChild(pointcutElement);
     }
 
-    public void appendToPointcutNode(Node node)
-    {
+    public void appendToPointcutNode(Node node) {
         pointcutElement.appendChild(node);
     }
 
-    public Node getClassNode(String name){
+    public Node getClassNode(String className){
         Element classNameElement = doc.createElement("className");
-        classNameElement.appendChild(doc.createTextNode(name));
-        pointcutElement.appendChild(classNameElement);
+        classNameElement.appendChild(doc.createTextNode(className));
         return classNameElement;
+    }
+
+    public Node getMethodNode(String methodName) {
+        Element methodElement = doc.createElement("method");
+        Element methodNameElement = doc.createElement("name");
+        methodNameElement.appendChild(doc.createTextNode(methodName));
+        methodElement.appendChild(methodNameElement);
+        return methodElement;
     }
 
     public String encode(){
