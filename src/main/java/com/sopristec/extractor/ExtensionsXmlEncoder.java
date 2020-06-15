@@ -83,6 +83,8 @@ public class ExtensionsXmlEncoder {
         }
         assert transformer != null;
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
         StringWriter writer = new StringWriter();
         try {
             transformer.transform(new DOMSource(doc), new StreamResult(writer));
