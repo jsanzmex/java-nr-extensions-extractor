@@ -1,8 +1,5 @@
 package com.sopristec.extractor;
 
-import com.sopristec.code.identities.Constructor;
-import com.sopristec.code.identities.Klass;
-import com.sopristec.code.identities.Method;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;

@@ -20,8 +20,9 @@ public class InputCommand extends Command  {
 
     @Override
     public boolean isValid() {
-        if(getCommandOptions().isEmpty()) {
-            SopristecLogManager.logger.debug("No input JAR filename was specified!");
+
+        if (getCommandOptions() == null || getCommandOptions().isEmpty()){
+            SopristecLogManager.logger.info("No input JAR filename was specified!");
             return false;
         }
 

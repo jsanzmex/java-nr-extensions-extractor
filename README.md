@@ -100,7 +100,37 @@ Here other ways to walk a tree, without an explicit Listening class:
 
 ## Composing XML Extensions file for NewRelic Java Agent
 
-This is a quick guide to instrument a Standalone Java application: 
+This is a quick guide with examples on how to instrument a Standalone Java application: 
 <https://docs.newrelic.com/docs/agents/java-agent/custom-instrumentation/java-xml-instrumentation-examples>
 
+## Including Log4j2 dependencies in a JAR artifact
 
+There is a very nice guide in this page <https://stackoverflow.com/questions/45933081/intellijs-artifacts-and-log4j-how-to-run>. Which summarizes to:
+
+* created a Java project in IDEA
+* added library dependencies to log4j-api and log4j-core, version 2.x
+* added a main class that just logs a single line using log4j
+* added an log4j2.xml to "src/main/resources" folder. Otherwise it won't be included inside the artifact.
+* created an artifact:
+    * Project Settings -> Artifacts -> "+" -> Jar -> from modules with dependencies
+    * selected the main class
+    * and kept the "JAR files from libraries" -> extract to the target JAR" selected
+* build the artifact: Build -> Build Artifacts
+* executed the artifact from the out/artifacts/test-artifact folder using "java -jar test-artifact"
+
+### Gotcha when including Log4j2 in a JAR
+
+It happend that we added log4j2 dependencies to POM file once the project had been progressed.
+But when executing the *JAR Application*, it complained about missing dependencies.
+The error is simple: when you edit the **Project Structure** to create an Artifact from your project,
+it gets configured with the dependencies at the POM file at the moment, 
+i.e. the Artifact configuration does not update dependencies automatically.
+
+All you need to do is re-create the Artifact configuration. You can directly the dependecies configured for an
+artifact at ".idea/artifacts/YOUR_ARTIFACT_NAME.xml"
+
+### More references
+<https://logging.apache.org/log4j/2.x/manual/configuration.html>
+<https://medium.com/@ruhshan_ahmed/how-to-use-log4j-in-jar-applications-ed9b8f8ece98>
+Different ways to configure:
+<https://www.codejava.net/coding/how-to-configure-log4j-as-logging-mechanism-in-java>
