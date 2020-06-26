@@ -114,9 +114,9 @@ public class Extractor {
         }
 
         // Get klasses and compose XML with them
-        encoder.appendAndGetPointcutElement(true);
         listener.getKlasses().forEach(klass -> {
             if(klass.shouldBeInstrumented(config)) {
+                encoder.appendAndGetPointcutElement(true);
                 Node klassNameNode = encoder.getClassNode(klass.getName());
                 encoder.appendToPointcutNode(klassNameNode);
                 klass.getMethodList().forEach(method -> {
