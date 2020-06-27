@@ -20,7 +20,7 @@ public class ExtensionsXmlEncoder {
     private final Element instrumentationElement;
     private Element pointcutElement = null;
 
-    public ExtensionsXmlEncoder(String metricPrefixValue) throws ParserConfigurationException {
+    public ExtensionsXmlEncoder(String metricPrefixValue, String extensionName) throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         doc = builder.newDocument();
@@ -28,7 +28,8 @@ public class ExtensionsXmlEncoder {
         mainRootElement.setAttribute("xmlns", "https://newrelic.com/docs/java/xsd/v1.0");
         mainRootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         mainRootElement.setAttribute("xsi:schemaLocation", "newrelic-extension extension.xsd ");
-        mainRootElement.setAttribute("name", "customExtension");
+        mainRootElement.setAttribute("name", extensionName + "Extension");
+        mainRootElement.setAttribute("version", "1.0");
         doc.appendChild(mainRootElement);
 
         instrumentationElement = doc.createElement("instrumentation");

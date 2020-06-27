@@ -34,7 +34,7 @@ public class OutputCommand extends Command {
     }
 
     @Override
-    public void setup(ExtractorConfig config) {
+    public void dumpTo(ExtractorConfig config) {
         config.outputFilename = filename;
     }
 }

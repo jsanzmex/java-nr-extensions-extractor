@@ -30,17 +30,17 @@ public class Application {
         if(!input.isValid()){
             return;
         }
-        input.setup(config);
+        input.dumpTo(config);
 
         // Step 2. Configure "methods" attribute
         MethodsCommand methods = new MethodsCommand(
                 System.getProperty(METHODS_OPTION)
         );
-        methods.setup(config);
+        methods.dumpTo(config);
         if(!methods.isValid()){
             return;
         }
-        methods.setup(config);
+        methods.dumpTo(config);
 
         // Step 3. Configure output filename. default is *.jar's file name
         OutputCommand output = new OutputCommand(
@@ -48,7 +48,7 @@ public class Application {
         if(!output.isValid()){
             return;
         }
-        output.setup(config);
+        output.dumpTo(config);
 
         // Step 4. Configure Metric Prefix
         MetricPrefixCommand metricPrefix = new MetricPrefixCommand(
@@ -56,12 +56,12 @@ public class Application {
         if(!metricPrefix.isValid()){
             return;
         }
-        metricPrefix.setup(config);
+        metricPrefix.dumpTo(config);
 
         // Step 5. Compose xml with the help of the JarClassListener
         ExtensionsXmlEncoder encoder = null;
         try {
-            encoder = new ExtensionsXmlEncoder(config.metricPrefix);
+            encoder = new ExtensionsXmlEncoder(config.metricPrefix, config.inputFilename.split("\\.")[0]);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }

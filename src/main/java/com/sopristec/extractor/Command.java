@@ -16,7 +16,7 @@ public abstract class Command {
 
     public abstract boolean isValid();
 
-    public abstract void setup(ExtractorConfig config);
+    public abstract void dumpTo(ExtractorConfig config);
 
     public static String dasherizeName(
             Class<? extends Command> cmd

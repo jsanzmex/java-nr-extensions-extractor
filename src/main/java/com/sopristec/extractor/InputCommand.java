@@ -38,7 +38,7 @@ public class InputCommand extends Command  {
     }
 
     @Override
-    public void setup(ExtractorConfig config) {
+    public void dumpTo(ExtractorConfig config) {
         config.inputPath = inputPath;
         config.inputFilename = getCommandOptions();
     }

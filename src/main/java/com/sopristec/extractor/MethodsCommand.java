@@ -28,7 +28,7 @@ public class MethodsCommand extends Command {
     }
 
     @Override
-    public void setup(ExtractorConfig config) {
+    public void dumpTo(ExtractorConfig config) {
         config.shouldExtractPrivate = shouldExtractPrivate;
         config.shouldExtractPublic = shouldExtractPublic;
     }
