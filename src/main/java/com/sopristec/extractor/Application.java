@@ -27,6 +27,7 @@ public class Application {
         // Step 1. Configure input JAR path
         InputCommand input = new InputCommand(System.getProperty(INPUT_OPTION));
         if(!input.isValid()){
+            logDuration();
             return;
         }
         input.dumpTo(config);
@@ -37,22 +38,27 @@ public class Application {
         );
         methods.dumpTo(config);
         if(!methods.isValid()){
+            logDuration();
             return;
         }
         methods.dumpTo(config);
 
         // Step 3. Configure output filename. default is *.jar's file name
         OutputCommand output = new OutputCommand(
-                System.getProperty(OUTPUT_OPTION, config.inputFilename.split("\\.")[0]));
+                System.getProperty(OUTPUT_OPTION, config.outputPath));
         if(!output.isValid()){
+            SopristecLogManager.logger.error(String.format("Output file path \"%s\" is invalid.", config.outputPath));
+            logDuration();
             return;
         }
+        // Write output filename:
         output.dumpTo(config);
 
         // Step 4. Configure Metric Prefix
         MetricPrefixCommand metricPrefix = new MetricPrefixCommand(
                 System.getProperty(METRIC_PREFIX_OPTION, ""));
         if(!metricPrefix.isValid()){
+            logDuration();
             return;
         }
         metricPrefix.dumpTo(config);
@@ -63,6 +69,7 @@ public class Application {
             encoder = new ExtensionsXmlEncoder(config.metricPrefix, config.inputFilename.split("\\.")[0]);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
+            logDuration();
         }
 
         // Step 6. Extract method names
@@ -76,6 +83,7 @@ public class Application {
             writer.write(encoder.encode());
         } catch (IOException e) {
             e.printStackTrace();
+            logDuration();
         }
 
         // End-of-extraction

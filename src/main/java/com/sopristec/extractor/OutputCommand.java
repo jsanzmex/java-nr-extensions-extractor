@@ -28,7 +28,7 @@ public class OutputCommand extends Command {
 
     @Override
     public boolean isValid() {
-        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_.@()-]+\\.xml$");
+        Pattern pattern = Pattern.compile("^[/\\\\\\\\a-zA-Z0-9_.@()-]+\\.xml$");
         Matcher matcher = pattern.matcher(filename);
         return matcher.matches();
     }

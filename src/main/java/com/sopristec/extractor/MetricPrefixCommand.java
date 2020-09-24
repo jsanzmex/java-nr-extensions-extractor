@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Processes the command line "metricPrefix" argument: "-DmetricPrefix"
  * Possible values: Any alpha-numeric value that does not start with a number.
- *                  Spaces will
+ *                  Spaces will be converted to dashes (-).
  * Default Value: "Custom"
  */
 public class MetricPrefixCommand extends Command {

@@ -39,3 +39,4 @@ buildNumber.properties
 
 JavaExtensionsExtractor.xml
 *.log
+!/JavaExtensionsExtractor.jar
