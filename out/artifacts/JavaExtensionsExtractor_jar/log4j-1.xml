@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<extension xmlns="https://newrelic.com/docs/java/xsd/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="log4j-1Extension" version="1.0" xsi:schemaLocation="newrelic-extension extension.xsd ">
+  <instrumentation metricPrefix="Custom"/>
+</extension>

@@ -200,7 +200,7 @@ public class Extractor {
     }
 
     private void reportRemovedClasses(int originalCount, String criteria, List list){
-        SopristecLogManager.logger.debug(String.format("Removed %d classes that didn't meet this criteria: %s", originalCount - list.size(), criteria));
+        SopristecLogManager.logger.info(String.format("Removed %d \"class candidates\" out of %d because they didn't meet this criteria: %s", originalCount - list.size(), originalCount, criteria));
     }
 
     private List<String> getRawClassNames(){
