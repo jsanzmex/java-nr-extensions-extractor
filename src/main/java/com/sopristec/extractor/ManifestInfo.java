@@ -6,13 +6,21 @@ import java.util.Properties;
 
 public class ManifestInfo {
 
-    public static void PrintInfo(){
-        InputStream is = Application.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
+    // Updates version from this hard-code since modifying META-INF/MANIFEST.MF at resources folder
+    // does not seem to reflect any change to Manifest version.
+    private static String MANIFEST_VERSION = "1.1";
 
+    public static void PrintInfo(){
+
+        InputStream is = Application.class.getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF");
         Properties prop = new Properties();
         try {
             prop.load( is );
-            SopristecLogManager.logger.info("PACKAGE INFO\n-------------------------------------------\nJava Extensions Extractor VERSION " + prop.getProperty("Manifest-Version")+"\n-------------------------------------------");
+            //String manifestVersion = prop.getProperty("Manifest-Version");
+            SopristecLogManager.logger.info("PACKAGE INFO" +
+                            "\n-------------------------------------------\n" +
+                            "Java Extensions Extractor VERSION " + MANIFEST_VERSION +
+                            "\n-------------------------------------------");
         } catch (
                 IOException ex) {
             SopristecLogManager.logger.error(Application.class.getName() + " " + ex);
