@@ -69,8 +69,8 @@ public class Extractor {
 
         // Extract Classes & Methods from Raw Command Line utils.
         List<String> classNames = getRawClassNames();
-        Predicate<String> isNotClass = this::indexOfClassGTOne;
-        removeNonClasses(classNames, isNotClass);
+        removeFromListIf(classNames, this::doesNotContainClassSubstring, "Does not contain \".class\" substring.");
+        removeFromListIf(classNames, this::doesContainFlaggedPackage, "Does contain flagged packages.");
         List<String> formattedClassNames = new ArrayList<>();
         classNames.forEach(s -> {
             formattedClassNames.add(formatClassName(s));
@@ -82,7 +82,6 @@ public class Extractor {
             SopristecLogManager.logger.trace(String.format("mn %d: ", ++lineCount) + s);
             SopristecLogManager.logger.debug(s);
         });
-
 
         // ANTLR4 Extraction
         JarClassListener listener = new JarClassListener();
@@ -127,7 +126,6 @@ public class Extractor {
                 });
             }
         });
-
     }
 
     // endregion
@@ -176,13 +174,33 @@ public class Extractor {
                 .replaceAll("/",".");
     }
 
-    private boolean indexOfClassGTOne(String s){
+    private boolean doesNotContainClassSubstring(String s){
         return !s.contains(".class");
     }
 
-    private <T> void removeNonClasses(List<T> l, Predicate<T> p)
+    private String[] flaggedPackages = new String[]{
+            "org/apache/log4j"
+    };
+
+    /*
+    Removes flagged classes, from a monitoring perspective.
+    The perfect example is Log4j. It is not necessary at all to
+    monitor Log4j executions, as they are very frequent and in most cases,
+    its execution does not have a severe impact on final response time.
+     */
+    private boolean doesContainFlaggedPackage(String input){
+        return Arrays.stream(flaggedPackages).anyMatch(input::contains);
+    }
+
+    private <T> void removeFromListIf(List<T> l, Predicate<T> p, String criteria)
     {
+        int originalCount = l.size();
         l.removeIf(p);
+        reportRemovedClasses(originalCount, criteria, l);
+    }
+
+    private void reportRemovedClasses(int originalCount, String criteria, List list){
+        SopristecLogManager.logger.debug(String.format("Removed %d classes that didn't meet this criteria: %s", originalCount - list.size(), criteria));
     }
 
     private List<String> getRawClassNames(){
@@ -190,7 +208,7 @@ public class Extractor {
             return RuntimeTask.executeCommand(
                     new String[] {"jar", "tf", config.inputFilename});
         } catch (IOException e) {
-            SopristecLogManager.logger.error("An error ocurred while trying to extract CLASS NAMES!");
+            SopristecLogManager.logger.error("An error occurred while trying to extract CLASS NAMES!");
             e.printStackTrace();
         }
         return new ArrayList<>();
