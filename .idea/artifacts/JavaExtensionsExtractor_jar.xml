@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JavaExtensionsExtractor:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JavaExtensionsExtractor_jar</output-path>
+    <root id="archive" name="JavaExtensionsExtractor.jar">
+      <element id="module-output" name="JavaExtensionsExtractor" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/logging/log4j/log4j-api/2.12.1/log4j-api-2.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/antlr/antlr4-runtime/4.7.2/antlr4-runtime-4.7.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/logging/log4j/log4j-core/2.12.1/log4j-core-2.12.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
