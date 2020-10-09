@@ -13,6 +13,7 @@ public class Application {
     private static final String METHODS_OPTION = "methods";
     private static final String OUTPUT_OPTION = "output";
     private static final String METRIC_PREFIX_OPTION = "metricPrefix";
+    private static final String NEW_RELIC_AGENT_VERSION_OPTION = "nrversion";
 
     private static long startTime;
 
@@ -58,19 +59,27 @@ public class Application {
         }
         metricPrefix.dumpTo(config);
 
-        // Step 5. Compose xml with the help of the JarClassListener
+        // Step 5. Configure what NewRelic Agent version XML will conform to
+        NewRelicAgentVersionCommand nrAgent = new NewRelicAgentVersionCommand(
+                System.getProperty(NEW_RELIC_AGENT_VERSION_OPTION, ""));
+        if(!nrAgent.isValid()){
+            return;
+        }
+        nrAgent.dumpTo(config);
+
+        // Step 6. Compose xml with the help of the JarClassListener
         ExtensionsXmlEncoder encoder = null;
         try {
-            encoder = new ExtensionsXmlEncoder(config.metricPrefix, config.inputFilename.split("\\.")[0]);
+            encoder = new ExtensionsXmlEncoder(config.metricPrefix, config.inputFilename.split("\\.")[0], config.newRelicAgentversion);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
 
-        // Step 6. Extract method names
+        // Step 7. Extract method names
         Extractor extractor = new Extractor(config, encoder);
         extractor.execute();
 
-        // Step 7. Write file
+        // Step 8. Write file
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(config.outputFilename), StandardCharsets.UTF_8))) {
             assert encoder != null;

@@ -18,28 +18,23 @@ public class ExtensionsXmlEncoder {
 
     private final Document doc;
     private final Element instrumentationElement;
-    private Element pointcutElement = null;
+    private final NodeBuilder nodeBuilder;
+    private Element pointcutElement;
 
-    public ExtensionsXmlEncoder(String metricPrefixValue, String extensionName) throws ParserConfigurationException {
+    // TODO: Investigate if unescaping &gt; & &lt; would make NewRelic agents crash
+
+    public ExtensionsXmlEncoder(String metricPrefixValue, String extensionName, String newRelicAgentVersion) throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         doc = builder.newDocument();
-        Element mainRootElement = doc.createElement("extension");
-        mainRootElement.setAttribute("xmlns", "https://newrelic.com/docs/java/xsd/v1.0");
-        mainRootElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        mainRootElement.setAttribute("xsi:schemaLocation", "newrelic-extension extension.xsd ");
-        mainRootElement.setAttribute("name", extensionName + "Extension");
-        mainRootElement.setAttribute("version", "1.0");
-        doc.appendChild(mainRootElement);
-
-        instrumentationElement = doc.createElement("instrumentation");
-        instrumentationElement.setAttribute("metricPrefix", metricPrefixValue);
+        nodeBuilder = NodeBuilderFactory.createNodeBuilder(newRelicAgentVersion);
+        Element mainRootElement = nodeBuilder.buildExtensionElement(extensionName, doc);
+        instrumentationElement = nodeBuilder.buildInstrumentationElement(metricPrefixValue, doc);
         mainRootElement.appendChild(instrumentationElement);
     }
 
     public Element appendAndGetPointcutElement(boolean transactionStartPoint){
-        pointcutElement = doc.createElement("pointcut");
-        pointcutElement.setAttribute("transactionStartPoint", transactionStartPoint ? "true" : "false");
+        pointcutElement = nodeBuilder.buildPointcutElement(transactionStartPoint, doc);
         return (Element) instrumentationElement.appendChild(pointcutElement);
     }
 
@@ -92,6 +87,7 @@ public class ExtensionsXmlEncoder {
         } catch (TransformerException e) {
             e.printStackTrace();
         }
+        // Uncomment replaceAll to remove space and new-line characters in your final XML.
         return writer.getBuffer().toString();//.replaceAll("\n|\r", "");
     }
 }

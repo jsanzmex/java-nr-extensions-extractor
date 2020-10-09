@@ -6,5 +6,6 @@ public class ExtractorConfig {
     public String outputFilename;
     public boolean shouldExtractPrivate = false;
     public boolean shouldExtractPublic = false;
+    public String newRelicAgentversion;
     public String metricPrefix;
 }
