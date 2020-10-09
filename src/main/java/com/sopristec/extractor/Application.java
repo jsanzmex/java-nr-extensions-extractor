@@ -19,7 +19,8 @@ public class Application {
 
     public static void main(String[] args) {
 
-        // Set log level
+        // Initial setup
+        ManifestInfo.PrintInfo();
         setLogLevel();
 
         // Beginning of extraction
